@@ -1,6 +1,7 @@
 const express = require("express");
 const morgan = require("morgan");
 const { join } = require("path");
+const validateCredentials = require("./controllers/login.controller");
 
 const app = express();
 
@@ -24,12 +25,14 @@ app.get("/login", (req, res, next) => {
 
 // login api route for validation
 app.post("/login", (req, res, next) => {
-  // validate credentials
-  // TODO
+  const { username, password } = req.body;
 
-  if (req.body.password == "1234") {
+  // validate credentials
+  let authUser = validateCredentials(username, password);
+
+  if (authUser) {
     // send success
-    res.json({ msg: "Successful login.", success: true });
+    res.json({ msg: "Successful login.", success: true, authUser });
   } else {
     // send error
     res

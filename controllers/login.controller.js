@@ -1,14 +1,30 @@
-const { readFile, read } = require("fs");
+const { readFile, readFileSync } = require("fs");
 const { join } = require("path");
+const utils = require("../utils");
 
+/**
+ *
+ * @param {string} username
+ * @param {string} password
+ * Returns the user's name and username that is authenticated. If invalid credentials, returns null.
+ */
 const validateCredentials = (username, password) => {
-    readFile(join(__dirname, "../data/logindata.csv"), (err, contents) => {
-        if (err) {
-            console.error(err);
-            return false;
-        }
+  let contents = readFileSync(join(__dirname, "../data/logindata.csv"));
+  let contentsJSON = utils.csvToJSON(contents.toString());
+  let authenticatedUser = contentsJSON.find(
+    (user) => user.Username == username && user.Password == password
+  );
 
-        let contentsJSON = contents.toString().split("\n").map((row) => row.split(","));
-        
-    })
-}
+  console.log(authenticatedUser);
+
+  return (
+    authenticatedUser && {
+      id: authenticatedUser.Id,
+      name: authenticatedUser.Name,
+      username: authenticatedUser.Username,
+      authStatus: "tempValueAuthenticated",
+    }
+  );
+};
+
+module.exports = validateCredentials;

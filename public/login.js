@@ -23,6 +23,9 @@ form.addEventListener("submit", async (event) => {
 
   console.log(data);
 
+  localStorage.setItem("user", JSON.stringify(data.authUser));
+  localStorage.setItem("auth", data.authUser.authStatus);
+
   if (data.success) {
     window.location.href = "/";
   }
